@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, View, FlatList} from 'react-native';
+import {StyleSheet, View, FlatList, Button} from 'react-native';
 import GoalItem from './components/GoalItem';
 import GoalInput from './components/GoalInput';
 
@@ -10,18 +10,35 @@ type courseGoal = {
 };
 
 export default function App() {
+    const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
     const [courseGoal, setCourseGoal] = useState<courseGoal[]>([]);
+
+    function startAddGoalHandler() {
+        setModalIsVisible(true);
+    }
+
+    function endAddGoalHandler() {
+        setModalIsVisible(false);
+    }
 
     function addLoadHandler(enteredGoalText: string) {
         setCourseGoal((currentCourseGoal) => [
             ...currentCourseGoal,
             {text: enteredGoalText, id: Math.random().toString()},
         ]);
+        endAddGoalHandler();        
+    }
+
+    function deleteGoalHandler(id: number | string) {
+        setCourseGoal((currentCourseGoal) => {
+            return currentCourseGoal.filter((goal) => goal.id !== id);
+        });
     }
 
     return (
         <View style={styles.appContainer}>
-            <GoalInput onAddGoal={addLoadHandler} />
+            <Button title='Add New Goal' color='#5e0acc' onPress={startAddGoalHandler} />
+            {modalIsVisible && <GoalInput onAddGoal={addLoadHandler} visible={modalIsVisible} onCancel={endAddGoalHandler} />}
             <View style={styles.goalsContainer}>
                 <FlatList
                     keyExtractor={(item, index) => {
@@ -29,7 +46,12 @@ export default function App() {
                     }}
                     data={courseGoal}
                     renderItem={(itemData) => {
-                        return <GoalItem itemData={itemData.item} />;
+                        return (
+                            <GoalItem
+                                itemData={itemData.item}
+                                onDeleteItem={deleteGoalHandler}
+                            />
+                        );
                     }}
                     alwaysBounceVertical={false}
                 />

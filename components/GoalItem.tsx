@@ -1,19 +1,26 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text, Pressable} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 interface GoalInputProps {
     itemData: {
-        text:string
-    }
+        text: string;
+        id: number | string;
+    };
+    onDeleteItem: (id: string | number) => void;
 }
 
-const GoalItem = ({itemData}: GoalInputProps) => {
+const GoalItem = ({itemData, onDeleteItem}: GoalInputProps) => {
     return (
         <View style={styles.goalItem}>
-        <Text style={styles.goalText}>
-            {itemData.text}
-        </Text>
-    </View>
+            <Pressable
+                android_ripple={{color: '#dddddd'}}
+                style={({pressed}) => pressed && styles.pressedItem}
+                onPress={onDeleteItem.bind(this, itemData.id)}
+            >
+                <Text style={styles.goalText}>{itemData.text}</Text>
+            </Pressable>
+        </View>
     );
 };
 
@@ -22,11 +29,14 @@ export default GoalItem;
 const styles = StyleSheet.create({
     goalItem: {
         margin: 8,
-        padding: 8,
         borderRadius: 6,
         backgroundColor: '#5e0acc',
     },
+    pressedItem: {
+        opacity: 0.5
+    },
     goalText: {
         color: 'white',
+        padding: 8,
     },
 });
