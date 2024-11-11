@@ -26,7 +26,7 @@ export default function App() {
             ...currentCourseGoal,
             {text: enteredGoalText, id: Math.random().toString()},
         ]);
-        endAddGoalHandler();        
+        endAddGoalHandler();
     }
 
     function deleteGoalHandler(id: number | string) {
@@ -36,27 +36,40 @@ export default function App() {
     }
 
     return (
-        <View style={styles.appContainer}>
-            <Button title='Add New Goal' color='#5e0acc' onPress={startAddGoalHandler} />
-            {modalIsVisible && <GoalInput onAddGoal={addLoadHandler} visible={modalIsVisible} onCancel={endAddGoalHandler} />}
-            <View style={styles.goalsContainer}>
-                <FlatList
-                    keyExtractor={(item, index) => {
-                        return item.id;
-                    }}
-                    data={courseGoal}
-                    renderItem={(itemData) => {
-                        return (
-                            <GoalItem
-                                itemData={itemData.item}
-                                onDeleteItem={deleteGoalHandler}
-                            />
-                        );
-                    }}
-                    alwaysBounceVertical={false}
+        <>
+            <StatusBar style='light' />
+            <View style={styles.appContainer}>
+                <Button
+                    title='Add New Goal'
+                    color='#905ad8'
+                    onPress={startAddGoalHandler}
                 />
+                {modalIsVisible && (
+                    <GoalInput
+                        onAddGoal={addLoadHandler}
+                        visible={modalIsVisible}
+                        onCancel={endAddGoalHandler}
+                    />
+                )}
+                <View style={styles.goalsContainer}>
+                    <FlatList
+                        keyExtractor={(item, index) => {
+                            return item.id;
+                        }}
+                        data={courseGoal}
+                        renderItem={(itemData) => {
+                            return (
+                                <GoalItem
+                                    itemData={itemData.item}
+                                    onDeleteItem={deleteGoalHandler}
+                                />
+                            );
+                        }}
+                        alwaysBounceVertical={false}
+                    />
+                </View>
             </View>
-        </View>
+        </>
     );
 }
 
